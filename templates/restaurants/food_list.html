@@ -1,0 +1,258 @@
+<!-- food_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ restaurant.name }} Menu | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/food_list.css' %}?v=20260627-1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="menu-page">
+    <!-- ===== HERO SECTION ===== -->
+    <section class="menu-hero">
+        <div class="hero-background">
+            {% if restaurant.cover_image %}
+                <div class="hero-image" style="background-image: url('{{ restaurant.cover_image.url }}');"></div>
+            {% elif restaurant.logo %}
+                <div class="hero-image" style="background-image: url('{{ restaurant.logo.url }}');"></div>
+            {% else %}
+                <div class="hero-image hero-placeholder"></div>
+            {% endif %}
+            <div class="hero-overlay"></div>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-container">
+                <a href="{% url 'restaurants' %}" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>All restaurants</span>
+                </a>
+
+                <div class="hero-restaurant-info">
+                    <div class="restaurant-logo-wrapper">
+                        {% if restaurant.logo %}
+                            <!-- <img class="restaurant-logo" src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }} logo"> -->
+                        {% else %}
+                            <div class="restaurant-logo-placeholder">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="restaurant-details">
+                        <div class="restaurant-status {% if not restaurant.is_open %}status-closed{% endif %}">
+                            <span class="status-dot"></span>
+                            {% if restaurant.is_open %}Open for delivery{% else %}Currently closed{% endif %}
+                        </div>
+                        <h1 class="restaurant-name">{{ restaurant.name }}</h1>
+                        <p class="restaurant-address">
+                            <i class="fa-solid fa-location-dot"></i>
+                            {{ restaurant.address }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="hero-stats-grid">
+                    <div class="hero-stat">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">{{ restaurant.rating|floatformat:1 }}</span>
+                            <span class="stat-label">Restaurant rating</span>
+                        </div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-motorcycle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">{{ restaurant.delivery_time }}-{{ restaurant.delivery_time|add:10 }} min</span>
+                            <span class="stat-label">Estimated delivery</span>
+                        </div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-bowl-food"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">{{ food_count }}</span>
+                            <span class="stat-label">Dish{{ food_count|pluralize:"es" }} available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MENU SECTION ===== -->
+    <section class="menu-listing">
+        <div class="menu-container">
+            <!-- Menu Header -->
+            <div class="menu-header">
+                <div class="menu-header-left">
+                    <span class="section-badge">
+                        <i class="fa-regular fa-compass"></i>
+                        Explore the menu
+                    </span>
+                    <h2 class="menu-title">Choose your favourite</h2>
+                    <p class="menu-subtitle">
+                        Select a dish from {{ restaurant.name }} and add it straight to your order.
+                    </p>
+                </div>
+                <div class="menu-header-right">
+                    <div class="menu-count-badge">
+                        <i class="fa-solid fa-list-ul"></i>
+                        <span><strong>{{ food_count }}</strong> item{{ food_count|pluralize }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Navigation -->
+            {% if categories %}
+            <nav class="category-nav" aria-label="Menu categories">
+                <button class="category-btn active" data-category="all">
+                    <i class="fa-solid fa-border-all"></i>
+                    All dishes
+                </button>
+                {% for category in categories %}
+                <button class="category-btn" data-category="{{ category.id }}">
+                    <i class="fa-solid fa-tag"></i>
+                    {{ category.name }}
+                </button>
+                {% endfor %}
+            </nav>
+            {% endif %}
+
+            <!-- Food Grid -->
+            <div class="food-grid">
+                {% for food in foods %}
+                <article class="food-card">
+                    <!-- Food Image -->
+                    <a href="{% url 'single_food' food.id %}" class="food-image-link">
+                        <div class="food-image-wrapper">
+                            {% if food.image %}
+                                <img class="food-image" src="{{ food.image.url }}" alt="{{ food.name }}" loading="lazy">
+                            {% else %}
+                                <div class="food-image-placeholder">
+                                    <i class="fa-solid fa-bowl-food"></i>
+                                </div>
+                            {% endif %}
+                            <div class="food-image-overlay"></div>
+                            
+                            <!-- Veg/Non-Veg Badge -->
+                            <span class="food-badge food-badge-{% if food.is_veg %}veg{% else %}nonveg{% endif %}">
+                                {% if food.is_veg %}
+                                    <span class="veg-dot"></span>
+                                    VEG
+                                {% else %}
+                                    <i class="fa-solid fa-play nonveg-triangle"></i>
+                                    NON VEG
+                                {% endif %}
+                            </span>
+
+                            <!-- Rating Badge -->
+                            <span class="food-rating-badge">
+                                <i class="fa-solid fa-star"></i>
+                                {{ food.rating|floatformat:1 }}
+                            </span>
+                        </div>
+                    </a>
+
+                    <!-- Wishlist Button -->
+                    <button class="wishlist-btn" type="button" aria-label="Save {{ food.name }}">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+
+                    <!-- Food Content -->
+                    <div class="food-content">
+                        <div class="food-top">
+                            <span class="food-category">{{ food.category.name }}</span>
+                            {% if food.is_available %}
+                                <span class="availability-badge available">
+                                    <span class="avail-dot"></span>
+                                    Available
+                                </span>
+                            {% else %}
+                                <span class="availability-badge unavailable">
+                                    <span class="avail-dot"></span>
+                                    Unavailable
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <h3 class="food-name">
+                            <a href="{% url 'single_food' food.id %}">{{ food.name }}</a>
+                        </h3>
+                        
+                        <p class="food-description">{{ food.description|truncatewords:18 }}</p>
+
+                        <div class="food-footer">
+                            <div class="food-price">
+                                <span class="price-amount">₹{{ food.price }}</span>
+                                <span class="price-label">Taxes included</span>
+                            </div>
+                            <form method="post" action="{% url 'add_to_cart' food.id %}">
+                                {% csrf_token %}
+                                <button class="add-to-cart-btn" type="submit" {% if not food.is_available %}disabled{% endif %}>
+                                    <i class="fa-solid fa-plus"></i>
+                                    Add to cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fa-solid fa-bowl-food"></i>
+                    </div>
+                    <h3>Menu is being updated</h3>
+                    <p>No dishes are available right now. Explore another nearby restaurant for something delicious.</p>
+                    <a href="{% url 'restaurants' %}" class="empty-cta">
+                        Browse restaurants
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SERVICE STRIP ===== -->
+    <section class="service-strip">
+        <div class="service-container">
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-solid fa-fire-burner"></i>
+                </div>
+                <div class="service-content">
+                    <strong>Made to order</strong>
+                    <span>Prepared after you place the order</span>
+                </div>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <div class="service-content">
+                    <strong>Careful packing</strong>
+                    <span>Securely packed for the journey</span>
+                </div>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-solid fa-shield-heart"></i>
+                </div>
+                <div class="service-content">
+                    <strong>Quality assured</strong>
+                    <span>Trusted restaurant and fresh food</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

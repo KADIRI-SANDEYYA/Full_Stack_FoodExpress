@@ -1,0 +1,295 @@
+<!-- home.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- <link rel="stylesheet" href="{% static 'css/home.css' %}?v=20260627-1"> -->
+<link rel="stylesheet" href="{% static 'css/home.css' %}?v=20260629-1">
+<link rel="stylesheet" href="{% static 'css/card-polish.css' %}?v=20260629-4">
+{% endblock %}
+
+{% block content %}
+<main class="home-page">
+    <!-- ===== HERO CAROUSEL ===== -->
+    <section class="hero-section" data-restaurants-url="{% url 'restaurants' %}"
+             data-restaurant-count="{{ restaurant_count }}" data-food-count="{{ food_count }}">
+        <div class="hero-carousel" aria-live="polite">
+            <!-- Slides will be injected by JavaScript -->
+        </div>
+        
+        <div class="hero-controls">
+            <button class="hero-btn hero-prev" type="button" aria-label="Previous slide">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="hero-dots" role="tablist" aria-label="Slide navigation"></div>
+            <button class="hero-btn hero-next" type="button" aria-label="Next slide">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- ===== ORDERING STEPS ===== -->
+    <section class="steps-section">
+        <div class="steps-header">
+            <div class="steps-header-left">
+                <span class="section-badge">Simple ordering</span>
+                <h2 class="section-title">Dinner is only <span class="highlight">three steps away</span></h2>
+            </div>
+            <p class="steps-desc">FoodExpress keeps discovery, ordering, and delivery simple.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-number">01</span>
+                <div class="step-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <h3 class="step-title">Choose a restaurant</h3>
+                <p class="step-desc">Explore trusted local kitchens and menus near you.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-number">02</span>
+                <div class="step-icon">
+                    <i class="fa-solid fa-bowl-food"></i>
+                </div>
+                <h3 class="step-title">Pick your favourites</h3>
+                <p class="step-desc">Add freshly prepared dishes to your cart in a few clicks.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-number">03</span>
+                <div class="step-icon">
+                    <i class="fa-solid fa-motorcycle"></i>
+                </div>
+                <h3 class="step-title">Enjoy fast delivery</h3>
+                <p class="step-desc">Place your order and get hot food delivered to your door.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== RESTAURANTS SECTION ===== -->
+    <section class="restaurants-section">
+        <div class="section-header">
+            <div class="section-header-left">
+                <span class="section-badge">Popular near you</span>
+                <h2 class="section-title">Top Restaurants</h2>
+                <p class="section-subtitle">Trusted local kitchens serving food people love.</p>
+            </div>
+            <a href="{% url 'restaurants' %}" class="view-all-link">
+                View all restaurants
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="restaurants-grid">
+            {% for restaurant in restaurants %}
+            <article class="restaurant-card">
+                <a href="{% url 'food_list' restaurant.id %}" class="card-image-link">
+                    <div class="card-image">
+                        {% if restaurant.cover_image %}
+                            <img src="{{ restaurant.cover_image.url }}" alt="{{ restaurant.name }}" loading="lazy">
+                        {% elif restaurant.logo %}
+                            <img src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }}" loading="lazy">
+                        {% else %}
+                            <div class="image-placeholder">
+                                <i class="fa-solid fa-store"></i>
+                            </div>
+                        {% endif %}
+                        <div class="image-overlay"></div>
+                        <span class="open-badge">
+                            <span class="badge-dot"></span>
+                            Open now
+                        </span>
+                    </div>
+                </a>
+
+                <div class="card-logo">
+                    {% if restaurant.logo %}
+                        <img src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }} logo" loading="lazy">
+                    {% else %}
+                        <i class="fa-solid fa-utensils"></i>
+                    {% endif %}
+                </div>
+
+                <div class="card-content">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <h3 class="card-title">
+                                <a href="{% url 'food_list' restaurant.id %}">{{ restaurant.name }}</a>
+                            </h3>
+                            <p class="card-cuisine">Freshly prepared favourites</p>
+                        </div>
+                        <span class="card-rating">
+                            <i class="fa-solid fa-star"></i>
+                            {{ restaurant.rating|floatformat:1 }}
+                        </span>
+                    </div>
+
+                    <p class="card-address">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>{{ restaurant.address|truncatewords:10 }}</span>
+                    </p>
+
+                    <div class="card-meta">
+                        <span class="meta-item">
+                            <i class="fa-solid fa-motorcycle"></i>
+                            30-40 min
+                        </span>
+                        <span class="meta-item">
+                            <i class="fa-solid fa-wallet"></i>
+                            {% if restaurant.starting_price %}
+                                From ₹{{ restaurant.starting_price }}
+                            {% else %}
+                                Menu available
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <a href="{% url 'food_list' restaurant.id %}" class="card-cta">
+                        Explore menu
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-store"></i>
+                <h3>Restaurants are coming soon</h3>
+                <p>Add restaurants from the admin panel to display them here.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- ===== FOOD ITEMS SECTION ===== -->
+    <section class="food-section">
+        <div class="section-header">
+            <div class="section-header-left">
+                <span class="section-badge">Hand-picked dishes</span>
+                <h2 class="section-title">Recommended for you</h2>
+                <p class="section-subtitle">Popular choices prepared fresh by restaurants near you.</p>
+            </div>
+        </div>
+
+        <div class="food-grid">
+            {% for food in foods %}
+            <article class="food-card">
+                <div class="food-image-wrapper">
+                    <a href="{% url 'single_food' food.id %}" class="food-image-link">
+                        {% if food.image %}
+                            <img src="{{ food.image.url }}" alt="{{ food.name }}" loading="lazy">
+                        {% else %}
+                            <div class="food-image-placeholder">
+                                <i class="fa-solid fa-bowl-food"></i>
+                            </div>
+                        {% endif %}
+                        <div class="food-image-overlay"></div>
+                    </a>
+
+                    <span class="food-diet-badge {% if food.is_veg %}diet-veg{% else %}diet-nonveg{% endif %}">
+                        <span class="diet-dot"></span>
+                        {% if food.is_veg %}VEG{% else %}NON VEG{% endif %}
+                    </span>
+
+                    <button class="food-wishlist" type="button" data-food-id="{{ food.id }}" 
+                            aria-label="Save {{ food.name }}" aria-pressed="false">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+
+                    <span class="food-rating-badge">
+                        <i class="fa-solid fa-star"></i>
+                        {{ food.rating|floatformat:1 }}
+                    </span>
+                </div>
+
+                <div class="food-content">
+                    <span class="food-restaurant">
+                        <i class="fa-solid fa-store"></i>
+                        {{ food.restaurant.name }}
+                    </span>
+
+                    <div class="food-title-row">
+                        <h3 class="food-name">
+                            <a href="{% url 'single_food' food.id %}">{{ food.name }}</a>
+                        </h3>
+                        <span class="food-category">{{ food.category.name }}</span>
+                    </div>
+
+                    <p class="food-description">{{ food.description|truncatewords:15 }}</p>
+
+                    <div class="food-footer">
+                        <div class="food-price">
+                            <strong>₹{{ food.price }}</strong>
+                        </div>
+                        <form method="post" action="{% url 'add_to_cart' food.id %}">
+                            {% csrf_token %}
+                            <button class="food-order-btn" type="submit">
+                                Order Now
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-bowl-food"></i>
+                <h3>No dishes available yet</h3>
+                <p>Available menu items will appear here.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- ===== SERVICE STRIP ===== -->
+    <section class="service-strip">
+        <div class="service-item">
+            <div class="service-icon">
+                <i class="fa-solid fa-motorcycle"></i>
+            </div>
+            <div class="service-text">
+                <strong>Fast delivery</strong>
+                <span>Hot food at your door</span>
+            </div>
+        </div>
+        <div class="service-item">
+            <div class="service-icon">
+                <i class="fa-solid fa-shield-heart"></i>
+            </div>
+            <div class="service-text">
+                <strong>Trusted kitchens</strong>
+                <span>Quality you can count on</span>
+            </div>
+        </div>
+        <div class="service-item">
+            <div class="service-icon">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+            <div class="service-text">
+                <strong>Helpful support</strong>
+                <span>Here when you need us</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA SECTION ===== -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <span class="cta-badge">Hungry already?</span>
+            <h2 class="cta-title">Find your next <span class="highlight">favourite meal</span></h2>
+            <p class="cta-desc">Browse local restaurants, compare menus, and order something delicious today.</p>
+        </div>
+        <a href="{% url 'restaurants' %}" class="cta-btn">
+            Browse restaurants
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </section>
+</main>
+
+{{ category_images|json_script:"category-images" }}
+
+
+<script src="{% static 'js/home.js' %}?v=20260626-2"></script>
+{% endblock %}

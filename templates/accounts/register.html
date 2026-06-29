@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register | FoodExpress{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}?v=20260626-2">
+{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="auth-visual">
+        <span class="auth-badge">
+            <i class="fa-solid fa-utensils"></i> Start your food journey
+        </span>
+
+        <h1>Create your FoodExpress account</h1>
+        <p>Join FoodExpress to explore restaurants, add your favourite dishes to cart, and order food faster.</p>
+    </div>
+
+    <form method="post" class="auth-card">
+        {% csrf_token %}
+
+        <div class="auth-header">
+            <i class="fa-solid fa-user-plus"></i>
+            <h2>Create Account</h2>
+            <p>Fill your details to get started.</p>
+        </div>
+
+        <div class="input-group">
+            <label>Username</label>
+            <div class="input-box">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" name="username" placeholder="Enter username" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <div class="input-box">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" name="email" placeholder="Enter email address" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" name="password" placeholder="Create password" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Confirm Password</label>
+            <div class="input-box">
+                <i class="fa-solid fa-shield-halved"></i>
+                <input type="password" name="confirm_password" placeholder="Confirm password" required>
+            </div>
+        </div>
+
+        <button class="auth-btn" type="submit">
+            Register <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <div class="auth-link">
+            Already have an account? <a href="{% url 'login' %}">Login</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

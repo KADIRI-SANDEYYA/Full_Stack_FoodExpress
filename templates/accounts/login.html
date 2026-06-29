@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login | FoodExpress{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}?v=20260626-2">
+{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="auth-visual">
+        <span class="auth-badge">
+            <i class="fa-solid fa-bowl-food"></i> Fresh food, fast delivery
+        </span>
+        <h1>Welcome back to FoodExpress</h1>
+        <p>Login and continue ordering your favourite meals from top restaurants near you.</p>
+    </div>
+
+    <form method="post" class="auth-card">
+        {% csrf_token %}
+
+        <div class="auth-header">
+            <i class="fa-solid fa-user"></i>
+            <h2>Login</h2>
+            <p>Enter your details to continue.</p>
+        </div>
+
+        <div class="input-group">
+            <label>Username</label>
+            <div class="input-box">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" name="username" placeholder="Enter username" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" name="password" placeholder="Enter password" required>
+            </div>
+        </div>
+
+        <button class="auth-btn" type="submit">
+            Login <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <div class="auth-link">
+            New user? <a href="{% url 'register' %}">Create account</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

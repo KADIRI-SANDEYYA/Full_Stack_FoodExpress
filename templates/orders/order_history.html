@@ -1,0 +1,172 @@
+<!-- orders_history.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Orders | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/order_history.css' %}?v=20260626-6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="orders-page">
+    <!-- ===== HERO SECTION ===== -->
+    <section class="orders-hero">
+        <div class="hero-left">
+            <span class="hero-badge">
+                <i class="fa-solid fa-receipt"></i>
+                Order history
+            </span>
+            <h1 class="hero-title">Your food journey, <span class="hero-highlight">all in one place</span></h1>
+            <p class="hero-desc">
+                Check current order progress and revisit the meals you have enjoyed.
+            </p>
+        </div>
+        <a href="{% url 'restaurants' %}" class="browse-btn">
+            <i class="fa-solid fa-utensils"></i>
+            Find your next meal
+        </a>
+    </section>
+
+    {% if orders %}
+    <!-- ===== ORDERS LIST ===== -->
+    <section class="orders-list-section">
+        <div class="list-header">
+            <div class="header-left">
+                <h2 class="list-title">Recent orders</h2>
+                <p class="list-count">{{ orders|length }} order{{ orders|length|pluralize }} found</p>
+            </div>
+            <span class="sort-badge">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Newest first
+            </span>
+        </div>
+
+        <div class="order-list">
+            {% for order in orders %}
+            <article class="order-card">
+                <!-- Card Header -->
+                <header class="order-header">
+                    <div class="order-identity">
+                        <div class="order-icon">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <div class="order-meta">
+                            <small class="order-id">Order #FE{{ order.id|stringformat:"05d" }}</small>
+                            <h3 class="order-restaurant">FoodExpress Order</h3>
+                            <p class="order-date">
+                                <i class="fa-regular fa-calendar"></i>
+                                {{ order.created_at|date:"d M Y" }} at {{ order.created_at|time:"g:i A" }}
+                            </p>
+                        </div>
+                    </div>
+                    <span class="status-badge status-{{ order.status|slugify }}">
+                        {% if order.status == 'Delivered' %}
+                            <i class="fa-solid fa-circle-check"></i>
+                        {% elif order.status == 'Cancelled' %}
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        {% elif order.status == 'Out for Delivery' %}
+                            <i class="fa-solid fa-motorcycle"></i>
+                        {% else %}
+                            <i class="fa-solid fa-clock"></i>
+                        {% endif %}
+                        {{ order.status }}
+                    </span>
+                </header>
+
+                <!-- Status Track -->
+                <div class="status-track">
+                    <div class="track-step {% if order.status != 'Pending' %}completed{% endif %}">
+                        <span class="track-dot"></span>
+                        <span class="track-label">Placed</span>
+                    </div>
+                    <div class="track-line {% if order.status != 'Pending' %}completed{% endif %}"></div>
+                    <div class="track-step {% if order.status != 'Pending' and order.status != 'Preparing' %}completed{% endif %}">
+                        <span class="track-dot"></span>
+                        <span class="track-label">Preparing</span>
+                    </div>
+                    <div class="track-line {% if order.status == 'Out for Delivery' or order.status == 'Delivered' %}completed{% endif %}"></div>
+                    <div class="track-step {% if order.status == 'Out for Delivery' or order.status == 'Delivered' %}completed{% endif %}">
+                        <span class="track-dot"></span>
+                        <span class="track-label">On the way</span>
+                    </div>
+                    <div class="track-line {% if order.status == 'Delivered' %}completed{% endif %}"></div>
+                    <div class="track-step {% if order.status == 'Delivered' %}completed{% endif %}">
+                        <span class="track-dot"></span>
+                        <span class="track-label">Delivered</span>
+                    </div>
+                </div>
+
+                <!-- Order Body -->
+                <div class="order-body">
+                    <div class="order-items-section">
+                        <h4 class="section-title">Items ordered</h4>
+                        {% for item in order.items.all %}
+                        <div class="order-item-row">
+                            <span class="item-bullet"></span>
+                            <div class="item-info">
+                                <p class="item-name">{{ item.food_item.name }}</p>
+                                <small class="item-qty">Quantity: {{ item.quantity }}</small>
+                            </div>
+                            <strong class="item-subtotal">₹{{ item.subtotal }}</strong>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="delivery-section">
+                        <h4 class="section-title">Delivery details</h4>
+                        <p class="delivery-address">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>{{ order.address }}</span>
+                        </p>
+                        <p class="delivery-phone">
+                            <i class="fa-solid fa-phone"></i>
+                            <span>{{ order.phone }}</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <footer class="order-footer">
+                    <div class="total-amount">
+                        <small>Total paid</small>
+                        <strong>₹{{ order.total_price }}</strong>
+                    </div>
+                    <a href="{% url 'restaurants' %}" class="reorder-btn">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        Order again
+                    </a>
+                </footer>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% else %}
+    <!-- ===== EMPTY STATE ===== -->
+    <div class="empty-wrapper">
+        <div class="empty-orders">
+            <div class="empty-visual">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <div class="empty-accent">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+            </div>
+            <span class="empty-badge">
+                <i class="fa-regular fa-face-frown"></i>
+                No receipts yet
+            </span>
+            <h2 class="empty-title">Your first great meal is waiting</h2>
+            <p class="empty-desc">
+                Once you place an order, you can track its progress and see all the details here.
+            </p>
+            <a href="{% url 'restaurants' %}" class="explore-btn">
+                Browse restaurants
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

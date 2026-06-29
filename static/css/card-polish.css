@@ -1,0 +1,983 @@
+/*
+   Shared restaurant and food card polish.
+   Scoped to card components only so page layout, heroes, forms, and footer stay unchanged.
+*/
+
+.restaurant-card,
+.food-card {
+    position: relative;
+    container-type: inline-size;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid rgba(226, 232, 240, 0.95) !important;
+    border-radius: 8px !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.94)),
+        #ffffff !important;
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.04),
+        0 18px 46px rgba(15, 23, 42, 0.08) !important;
+    transform: translateZ(0);
+    transition:
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        transform 0.22s ease;
+}
+
+.restaurant-card::after,
+.food-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.restaurant-card:hover,
+.food-card:hover {
+    border-color: rgba(244, 81, 30, 0.28) !important;
+    box-shadow:
+        0 2px 4px rgba(15, 23, 42, 0.05),
+        0 28px 70px rgba(15, 23, 42, 0.14) !important;
+    transform: translateY(-6px);
+}
+
+.card-image-link,
+.food-image-link {
+    position: relative;
+    z-index: 2;
+}
+
+.card-image,
+.card-image-wrapper,
+.food-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 !important;
+    background:
+        linear-gradient(135deg, rgba(244, 81, 30, 0.11), rgba(15, 118, 110, 0.10)),
+        #eef2f7 !important;
+}
+
+.card-image,
+.card-image-wrapper {
+    aspect-ratio: 16 / 10;
+    height: auto !important;
+}
+
+.food-image-wrapper {
+    aspect-ratio: 4 / 3;
+    height: auto !important;
+}
+
+.card-image img,
+.card-cover,
+.food-image,
+.food-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(1.08) contrast(1.03);
+    transform: scale(1.001);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), filter 0.3s ease;
+}
+
+.restaurant-card:hover .card-image img,
+.restaurant-card:hover .card-cover,
+.food-card:hover .food-image,
+.food-card:hover .food-image-wrapper img {
+    filter: saturate(1.16) contrast(1.05);
+    transform: scale(1.055);
+}
+
+.card-overlay,
+.image-overlay,
+.food-image-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.02) 0%, rgba(15, 23, 42, 0.08) 42%, rgba(15, 23, 42, 0.58) 100%),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.24), rgba(15, 23, 42, 0) 58%) !important;
+    pointer-events: none;
+}
+
+.card-image-placeholder,
+.image-placeholder,
+.food-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: #f4511e !important;
+    background:
+        linear-gradient(135deg, rgba(255, 241, 235, 0.92), rgba(236, 253, 245, 0.8)),
+        #f8fafc !important;
+    font-size: 38px;
+}
+
+.card-logo {
+    z-index: 4 !important;
+    width: 58px !important;
+    height: 58px !important;
+    border: 3px solid #ffffff !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+    box-shadow:
+        0 10px 24px rgba(15, 23, 42, 0.18),
+        0 0 0 1px rgba(226, 232, 240, 0.9) !important;
+    transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.home-page .restaurant-card .card-logo {
+    top: calc(62.5cqw - 29px) !important;
+    bottom: auto !important;
+    left: 18px !important;
+}
+
+.home-page .restaurant-card .card-content {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 296px;
+    padding: 46px 30px 28px !important;
+}
+
+.home-page .restaurant-card .card-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 14px;
+    margin-bottom: 0 !important;
+}
+
+.home-page .restaurant-card .card-title {
+    font-size: clamp(18px, 5.8cqw, 22px) !important;
+    line-height: 1.18 !important;
+}
+
+.home-page .restaurant-card .card-cuisine {
+    margin-top: 5px !important;
+    font-size: 13px !important;
+}
+
+.home-page .restaurant-card .card-rating {
+    min-width: 70px;
+    justify-content: center;
+    padding: 7px 13px !important;
+    font-size: 13px !important;
+}
+
+.home-page .restaurant-card .card-address {
+    display: grid !important;
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 8px;
+    margin: 2px 0 0 !important;
+    font-size: 14px !important;
+}
+
+.home-page .restaurant-card .card-address i {
+    margin-top: 3px !important;
+    text-align: center;
+}
+
+.home-page .restaurant-card .card-meta {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 18px !important;
+    margin: 4px 0 6px !important;
+}
+
+.home-page .restaurant-card .meta-item {
+    min-width: 0;
+    font-size: 13px !important;
+    line-height: 1.3;
+}
+
+.home-page .restaurant-card .meta-item i {
+    width: 16px;
+    text-align: center;
+}
+
+.home-page .restaurant-card .card-cta {
+    align-self: flex-start;
+    width: 124px;
+    min-height: 38px;
+    padding: 0 12px !important;
+    font-size: 11px !important;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.home-page .restaurant-card .card-cta i {
+    font-size: 11px !important;
+}
+
+.restaurant-card:hover .card-logo {
+    box-shadow:
+        0 14px 30px rgba(15, 23, 42, 0.22),
+        0 0 0 1px rgba(244, 81, 30, 0.18) !important;
+    transform: translateY(-2px);
+}
+
+.card-logo img {
+    border-radius: 6px !important;
+    object-fit: contain !important;
+}
+
+.badge,
+.open-badge,
+.food-badge,
+.food-diet-badge,
+.food-rating-badge,
+.card-rating,
+.availability-badge {
+    border-radius: 999px !important;
+    letter-spacing: 0.04em;
+}
+
+.badge,
+.open-badge,
+.food-badge,
+.food-diet-badge,
+.food-rating-badge {
+    backdrop-filter: blur(12px) saturate(145%);
+}
+
+.badge-open,
+.open-badge,
+.food-badge-veg,
+.diet-veg {
+    background: rgba(16, 185, 129, 0.94) !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 22px rgba(6, 95, 70, 0.24) !important;
+}
+
+.badge-closed,
+.food-badge-nonveg,
+.diet-nonveg {
+    background: rgba(239, 68, 68, 0.94) !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 22px rgba(153, 27, 27, 0.22) !important;
+}
+
+.badge-delivery,
+.food-rating-badge {
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    background: rgba(15, 23, 42, 0.76) !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2) !important;
+}
+
+.food-rating-badge i,
+.card-rating i {
+    color: #f59e0b !important;
+}
+
+.card-rating {
+    border: 1px solid rgba(245, 158, 11, 0.26) !important;
+    background: #fff8e7 !important;
+    color: #92400e !important;
+}
+
+.restaurant-card .card-content,
+.food-card .food-content {
+    position: relative;
+    z-index: 2;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), #ffffff 54%),
+        #ffffff;
+}
+
+.restaurant-card .card-content {
+    padding: 22px 20px 18px !important;
+}
+
+.food-card .food-content {
+    padding: 18px 18px 18px !important;
+}
+
+.card-title,
+.food-name {
+    letter-spacing: 0 !important;
+}
+
+.card-title a,
+.food-name a {
+    color: #111827 !important;
+    text-decoration: none;
+    transition: color 0.18s ease;
+}
+
+.card-title a:hover,
+.food-name a:hover {
+    color: #f4511e !important;
+}
+
+.card-cuisine,
+.card-address,
+.food-description,
+.delivery-info,
+.price-label {
+    color: #667085 !important;
+}
+
+.card-address,
+.food-description {
+    line-height: 1.55 !important;
+}
+
+.card-details {
+    border-color: rgba(226, 232, 240, 0.86) !important;
+}
+
+.detail-item,
+.food-category {
+    border-radius: 999px !important;
+}
+
+.detail-item {
+    border: 1px solid rgba(226, 232, 240, 0.92) !important;
+    background: #f8fafc !important;
+    color: #475467 !important;
+}
+
+.detail-item i,
+.card-address i,
+.delivery-info i {
+    color: #f4511e !important;
+}
+
+.food-category {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    min-height: 22px;
+    padding: 4px 10px;
+    border: 1px solid rgba(244, 81, 30, 0.14);
+    background: #fff1eb;
+    color: #d93d0d !important;
+    line-height: 1;
+}
+
+.availability-badge.available {
+    background: #ecfdf5 !important;
+    color: #047857 !important;
+}
+
+.availability-badge.unavailable {
+    background: #fef2f2 !important;
+    color: #b42318 !important;
+}
+
+.wishlist-btn,
+.food-wishlist {
+    z-index: 4 !important;
+    border: 1px solid rgba(255, 255, 255, 0.7) !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.14) !important;
+    backdrop-filter: blur(12px);
+}
+
+.wishlist-btn:hover,
+.food-wishlist:hover {
+    background: #e11d48 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) scale(1.04) !important;
+}
+
+.card-footer,
+.food-footer {
+    border-color: rgba(226, 232, 240, 0.86) !important;
+}
+
+.card-cta,
+.food-order-btn,
+.add-to-cart-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    border: 0 !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    background:
+        linear-gradient(135deg, #ff7145 0%, #f4511e 48%, #d93d0d 100%) !important;
+    box-shadow: 0 10px 22px rgba(244, 81, 30, 0.24) !important;
+    font-weight: 800 !important;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.card-cta:hover,
+.food-order-btn:hover,
+.add-to-cart-btn:hover:not(:disabled) {
+    color: #ffffff !important;
+    box-shadow: 0 14px 28px rgba(244, 81, 30, 0.34) !important;
+    transform: translateY(-2px);
+}
+
+.add-to-cart-btn:disabled {
+    background: #cbd5e1 !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+}
+
+.price-amount,
+.food-price strong {
+    color: #101827 !important;
+    letter-spacing: 0 !important;
+}
+
+@media (max-width: 768px) {
+    .restaurant-card:hover,
+    .food-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .restaurant-card .card-content,
+    .food-card .food-content {
+        padding: 16px !important;
+    }
+
+    .card-logo {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .card-cta,
+    .food-order-btn,
+    .add-to-cart-btn {
+        min-height: 42px;
+    }
+
+    .home-page .restaurant-card .card-content {
+        min-height: 0;
+        padding: 42px 22px 24px !important;
+    }
+
+    .home-page .restaurant-card .card-header {
+        gap: 10px;
+    }
+
+    .home-page .restaurant-card .card-title {
+        font-size: 20px !important;
+    }
+
+    .home-page .restaurant-card .card-cta {
+        min-height: 38px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-footer,
+    .food-footer {
+        align-items: stretch !important;
+    }
+
+    .card-cta,
+    .food-order-btn,
+    .add-to-cart-btn {
+        width: 100%;
+        white-space: normal;
+    }
+
+    .card-details {
+        gap: 7px !important;
+    }
+
+    .home-page .restaurant-card .card-logo {
+        top: calc(62.5cqw - 25px) !important;
+        left: 18px !important;
+    }
+
+    .home-page .restaurant-card .card-content {
+        padding: 40px 18px 22px !important;
+    }
+
+    .home-page .restaurant-card .card-header {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .home-page .restaurant-card .card-rating {
+        justify-self: start;
+    }
+
+    .home-page .restaurant-card .card-meta {
+        gap: 9px 14px !important;
+    }
+
+    .home-page .restaurant-card .card-cta {
+        width: auto;
+        min-width: 124px;
+        white-space: nowrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .restaurant-card,
+    .food-card,
+    .card-image img,
+    .card-cover,
+    .food-image,
+    .food-image-wrapper img,
+    .card-logo,
+    .wishlist-btn,
+    .food-wishlist,
+    .card-cta,
+    .food-order-btn,
+    .add-to-cart-btn {
+        transition-duration: 0.01ms !important;
+    }
+
+    .restaurant-card:hover,
+    .food-card:hover,
+    .restaurant-card:hover .card-image img,
+    .restaurant-card:hover .card-cover,
+    .food-card:hover .food-image,
+    .food-card:hover .food-image-wrapper img {
+        transform: none !important;
+    }
+}
+
+/* Home-only realism pass */
+.home-page .restaurant-card,
+.home-page .food-card {
+    border-color: rgba(203, 213, 225, 0.9) !important;
+    background: #ffffff !important;
+    box-shadow:
+        0 1px 1px rgba(15, 23, 42, 0.04),
+        0 10px 26px rgba(15, 23, 42, 0.08),
+        0 32px 74px rgba(15, 23, 42, 0.08) !important;
+}
+
+.home-page .restaurant-card::before,
+.home-page .food-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 24%),
+        radial-gradient(circle at 18% 0, rgba(244, 81, 30, 0.10), transparent 32%);
+    opacity: 0;
+    transition: opacity 0.24s ease;
+}
+
+.home-page .restaurant-card:hover,
+.home-page .food-card:hover {
+    border-color: rgba(244, 81, 30, 0.32) !important;
+    box-shadow:
+        0 2px 3px rgba(15, 23, 42, 0.05),
+        0 18px 44px rgba(15, 23, 42, 0.12),
+        0 44px 88px rgba(244, 81, 30, 0.09) !important;
+}
+
+.home-page .restaurant-card:hover::before,
+.home-page .food-card:hover::before {
+    opacity: 1;
+}
+
+.home-page .restaurant-card .card-image,
+.home-page .restaurant-card .card-image-wrapper,
+.home-page .food-card .food-image-wrapper {
+    box-shadow: inset 0 -1px 0 rgba(15, 23, 42, 0.08);
+}
+
+.home-page .restaurant-card .card-image::after,
+.home-page .restaurant-card .card-image-wrapper::after,
+.home-page .food-card .food-image-wrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 22%),
+        linear-gradient(0deg, rgba(15, 23, 42, 0.16), transparent 36%);
+}
+
+.home-page .restaurant-card .open-badge,
+.home-page .restaurant-card .badge,
+.home-page .food-card .food-rating-badge,
+.home-page .food-card .food-diet-badge,
+.home-page .food-card .food-badge {
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    text-shadow: 0 1px 1px rgba(15, 23, 42, 0.18);
+}
+
+.home-page .restaurant-card .open-badge {
+    top: 18px !important;
+    right: 18px !important;
+    min-height: 32px;
+    padding: 0 15px !important;
+    font-size: 10px !important;
+    box-shadow:
+        0 8px 18px rgba(5, 150, 105, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+}
+
+.home-page .restaurant-card .card-logo {
+    width: 64px !important;
+    height: 64px !important;
+    top: calc(62.5cqw - 32px) !important;
+    left: 28px !important;
+    padding: 7px !important;
+    box-shadow:
+        0 12px 28px rgba(15, 23, 42, 0.20),
+        0 0 0 1px rgba(226, 232, 240, 0.95),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+}
+
+.home-page .restaurant-card .card-content {
+    min-height: 306px;
+    padding: 50px 30px 28px !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, #ffffff 42%),
+        #ffffff !important;
+}
+
+.home-page .restaurant-card .card-title a,
+.home-page .food-card .food-name a {
+    color: #121826 !important;
+}
+
+.home-page .restaurant-card .card-title a {
+    font-weight: 850;
+}
+
+.home-page .restaurant-card .card-cuisine,
+.home-page .restaurant-card .card-address,
+.home-page .restaurant-card .meta-item,
+.home-page .food-card .food-description,
+.home-page .food-card .food-restaurant {
+    color: #5f6f86 !important;
+}
+
+.home-page .restaurant-card .card-rating {
+    background:
+        linear-gradient(180deg, #fffaf0, #fff3d3) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.home-page .restaurant-card .card-meta {
+    padding-top: 6px;
+}
+
+.home-page .restaurant-card .meta-item {
+    padding: 0;
+}
+
+.home-page .restaurant-card .meta-item i {
+    color: #f4511e !important;
+}
+
+.home-page .restaurant-card .card-cta,
+.home-page .food-card .food-order-btn {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 46%),
+        linear-gradient(135deg, #ff7448 0%, #f4511e 52%, #d93d0d 100%) !important;
+    box-shadow:
+        0 11px 22px rgba(244, 81, 30, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+.home-page .restaurant-card .card-cta::before,
+.home-page .food-card .food-order-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.28) 42%, transparent 72%);
+    transform: translateX(-120%);
+    transition: transform 0.55s ease;
+}
+
+.home-page .restaurant-card .card-cta span,
+.home-page .restaurant-card .card-cta i,
+.home-page .food-card .food-order-btn span,
+.home-page .food-card .food-order-btn i {
+    position: relative;
+    z-index: 1;
+}
+
+.home-page .restaurant-card .card-cta:hover,
+.home-page .food-card .food-order-btn:hover {
+    box-shadow:
+        0 16px 34px rgba(244, 81, 30, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+}
+
+.home-page .restaurant-card .card-cta:hover::before,
+.home-page .food-card .food-order-btn:hover::before {
+    transform: translateX(120%);
+}
+
+.home-page .food-card .food-image-wrapper {
+    aspect-ratio: 1 / 0.78;
+}
+
+.home-page .food-card .food-content {
+    gap: 10px;
+    padding: 18px 20px 20px !important;
+}
+
+.home-page .food-card .food-restaurant {
+    min-height: 18px;
+    font-size: 12px !important;
+}
+
+.home-page .food-card .food-title-row {
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.home-page .food-card .food-name {
+    font-size: clamp(16px, 6cqw, 20px) !important;
+    line-height: 1.22 !important;
+}
+
+.home-page .food-card .food-category {
+    flex: 0 0 auto;
+    max-width: 42%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.home-page .food-card .food-description {
+    min-height: 38px;
+    margin-bottom: 0 !important;
+}
+
+.home-page .food-card .food-footer {
+    padding-top: 16px !important;
+}
+
+.home-page .food-card .food-price strong {
+    font-size: 21px !important;
+}
+
+.home-page .food-card .food-order-btn {
+    min-width: 104px;
+    min-height: 38px;
+    padding: 0 14px !important;
+    font-size: 11px !important;
+}
+
+.home-page .food-card .food-order-btn i {
+    font-size: 10px !important;
+}
+
+@media (max-width: 768px) {
+    .home-page .restaurant-card .card-logo {
+        left: 22px !important;
+        width: 58px !important;
+        height: 58px !important;
+        top: calc(62.5cqw - 29px) !important;
+    }
+
+    .home-page .restaurant-card .card-content {
+        min-height: 0;
+        padding: 46px 22px 24px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-page .restaurant-card .card-logo {
+        left: 20px !important;
+        width: 54px !important;
+        height: 54px !important;
+        top: calc(62.5cqw - 27px) !important;
+    }
+
+    .home-page .restaurant-card .card-content {
+        padding: 44px 18px 22px !important;
+    }
+
+    .home-page .food-card .food-title-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .home-page .food-card .food-category {
+        max-width: 100%;
+    }
+}
+
+/* Final home restaurant card alignment */
+.home-page .restaurants-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 28px !important;
+    align-items: stretch;
+}
+
+.home-page .restaurants-grid .restaurant-card {
+    display: flex !important;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    background:
+        radial-gradient(circle at 86% 18%, rgba(244, 81, 30, 0.14), transparent 28%),
+        radial-gradient(circle at 12% 92%, rgba(15, 118, 110, 0.12), transparent 26%),
+        linear-gradient(135deg, #111827 0%, #152433 56%, #241915 100%) !important;
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.18),
+        0 20px 48px rgba(15, 23, 42, 0.20) !important;
+}
+
+.home-page .restaurants-grid .restaurant-card:hover {
+    border-color: rgba(244, 81, 30, 0.38) !important;
+    box-shadow:
+        0 2px 3px rgba(0, 0, 0, 0.18),
+        0 24px 58px rgba(15, 23, 42, 0.24),
+        0 44px 92px rgba(244, 81, 30, 0.12) !important;
+}
+
+.home-page .restaurants-grid .card-image {
+    aspect-ratio: 16 / 9 !important;
+}
+
+.home-page .restaurants-grid .card-logo {
+    top: calc(56.25cqw - 31px) !important;
+    left: 22px !important;
+    width: 62px !important;
+    height: 62px !important;
+    padding: 6px !important;
+}
+
+.home-page .restaurants-grid .card-content {
+    display: flex !important;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    padding: 40px 22px 20px !important;
+    background: transparent !important;
+}
+
+.home-page .restaurants-grid .card-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    margin: 0 !important;
+}
+
+.home-page .restaurants-grid .card-title {
+    font-size: 19px !important;
+    line-height: 1.22 !important;
+}
+
+.home-page .restaurants-grid .card-title a {
+    color: #ffffff !important;
+}
+
+.home-page .restaurants-grid .card-title a:hover {
+    color: #ff9b78 !important;
+}
+
+.home-page .restaurants-grid .card-cuisine {
+    color: #cbd5e1 !important;
+    font-size: 12px !important;
+}
+
+.home-page .restaurants-grid .card-address {
+    display: grid !important;
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 8px;
+    margin: 0 !important;
+    color: #cbd5e1 !important;
+    font-size: 13px !important;
+}
+
+.home-page .restaurants-grid .card-address i,
+.home-page .restaurants-grid .meta-item i {
+    color: #ff9b78 !important;
+}
+
+.home-page .restaurants-grid .card-rating {
+    border-color: rgba(245, 158, 11, 0.30) !important;
+    background: rgba(251, 191, 36, 0.14) !important;
+    color: #fcd34d !important;
+}
+
+.home-page .restaurants-grid .card-meta {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 8px !important;
+    margin: 0 0 4px !important;
+    padding-top: 0;
+}
+
+.home-page .restaurants-grid .meta-item {
+    min-height: 30px;
+    padding: 6px 11px !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0 !important;
+    font-size: 11px !important;
+    font-weight: 800;
+}
+
+.home-page .restaurants-grid .card-cta {
+    align-self: stretch;
+    width: 100%;
+    min-height: 42px;
+    margin-top: auto;
+    padding: 0 16px !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+}
+
+@media (max-width: 1024px) {
+    .home-page .restaurants-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-page .restaurants-grid .card-logo {
+        top: calc(56.25cqw - 29px) !important;
+        left: 20px !important;
+        width: 58px !important;
+        height: 58px !important;
+    }
+
+    .home-page .restaurants-grid .card-content {
+        padding-top: 38px !important;
+    }
+}
+
+@media (max-width: 520px) {
+    .home-page .restaurants-grid {
+        grid-template-columns: 1fr !important;
+        max-width: 380px;
+        margin-inline: auto;
+    }
+
+    .home-page .restaurants-grid .card-header {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .home-page .restaurants-grid .card-rating {
+        justify-self: start;
+    }
+
+    .home-page .restaurants-grid .card-logo {
+        top: calc(56.25cqw - 27px) !important;
+        width: 54px !important;
+        height: 54px !important;
+    }
+
+    .home-page .restaurants-grid .card-content {
+        padding-top: 36px !important;
+    }
+}

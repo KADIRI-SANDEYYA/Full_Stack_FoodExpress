@@ -1,0 +1,91 @@
+<!-- form_page.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/manager_form.css' %}?v=20260628-2">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="form-page">
+    <div class="form-container">
+        <!-- ===== BACK LINK ===== -->
+        <a href="{% url 'manager_dashboard' %}" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to dashboard
+        </a>
+
+        <!-- ===== FORM CARD ===== -->
+        <div class="form-card">
+            <!-- Header -->
+            <div class="form-header">
+                <span class="form-badge">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Staff action
+                </span>
+                <h1 class="form-title">{{ title }}</h1>
+                <p class="form-subtitle">{{ subtitle }}</p>
+            </div>
+
+            <!-- Form -->
+            <form method="post" enctype="multipart/form-data" class="manager-form">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="form-errors">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                {% for field in form %}
+                <div class="form-group {% if field.field.widget.input_type == 'checkbox' %}form-group-checkbox{% endif %}">
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                        <label class="checkbox-label">
+                            {{ field }}
+                            <span class="checkbox-text">{{ field.label }}</span>
+                        </label>
+                    {% else %}
+                        <label for="{{ field.id_for_label }}" class="field-label">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                                <span class="required-star">*</span>
+                            {% endif %}
+                        </label>
+                        {{ field }}
+                    {% endif %}
+                    
+                    {% if field.help_text %}
+                        <span class="field-help">
+                            <i class="fa-solid fa-circle-info"></i>
+                            {{ field.help_text }}
+                        </span>
+                    {% endif %}
+                    
+                    {% for error in field.errors %}
+                        <span class="field-error">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fa-solid fa-check"></i>
+                        {{ button_text }}
+                    </button>
+                    <a href="{% url 'manager_dashboard' %}" class="cancel-btn">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

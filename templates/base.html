@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>{% block title %}FoodExpress{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20260629-2">
+    {% block css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/page_alignment.css' %}?v=20260626-2">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar" aria-label="Main navigation">
+            <a href="{% url 'home' %}" class="brand" aria-label="FoodExpress home">
+                <span class="brand-mark"><i class="fa-solid fa-bowl-food"></i></span>
+                <span class="brand-copy">
+                    <span class="brand-name">Food<span>Express</span></span>
+                    <small>Fresh food, delivered</small>
+                </span>
+            </a>
+
+            <button
+                class="nav-toggle"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="nav-menu"
+            >
+                <span></span><span></span><span></span>
+            </button>
+
+            <div class="nav-menu" id="nav-menu">
+                <form class="nav-search" method="get" action="{% url 'search' %}" role="search">
+                    <label class="sr-only" for="site-search">Search foods and restaurants</label>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input
+                        id="site-search"
+                        type="search"
+                        name="q"
+                        value="{{ request.GET.q|default:'' }}"
+                        placeholder="Search foods or restaurants"
+                        autocomplete="off"
+                    >
+                    <button type="submit" aria-label="Search">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="nav-links">
+                    <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                        <i class="fa-solid fa-house"></i><span>Home</span>
+                    </a>
+                    <a href="{% url 'restaurants' %}" class="{% if request.resolver_match.url_name == 'restaurants' or request.resolver_match.url_name == 'food_list' %}active{% endif %}">
+                        <i class="fa-solid fa-store"></i><span>Restaurants</span>
+                    </a>
+                    <a href="{% url 'cart' %}" class="cart-link {% if request.resolver_match.url_name == 'cart' or request.resolver_match.url_name == 'checkout' %}active{% endif %}">
+                        <span class="cart-icon"><i class="fa-solid fa-bag-shopping"></i></span>
+                        <span>Cart{% if cart_item_count %}<sup class="cart-count">{{ cart_item_count }}</sup>{% endif %}</span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                    <a href="{% url 'manager_dashboard' %}" class="{% if request.resolver_match.url_name == 'manager_dashboard' %}active{% endif %}">
+                        <i class="fa-solid fa-chart-line"></i><span>Manage</span>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'order_history' %}" class="{% if request.resolver_match.url_name == 'order_history' %}active{% endif %}">
+                        <i class="fa-solid fa-receipt"></i><span>Orders</span>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="nav-actions">
+                    {% if user.is_authenticated %}
+                    <div class="account-menu">
+                        <button
+                            class="account-trigger"
+                            type="button"
+                            aria-label="Open account menu"
+                            aria-expanded="false"
+                            aria-controls="account-dropdown"
+                        >
+                            <span class="user-avatar">{{ user.username|first|upper }}</span>
+                            <span class="account-trigger-copy">
+                                <small>Delivering to you</small>
+                                <strong>{{ user.username|upper }}</strong>
+                            </span>
+                            <i class="fa-solid fa-chevron-down account-chevron"></i>
+                        </button>
+
+                        <div class="account-dropdown" id="account-dropdown">
+                            <div class="account-card-head">
+                                <span class="user-avatar large">{{ user.username|first|upper }}</span>
+                                <span>
+                                    <small>Welcome back</small>
+                                    <strong>{{ user.username }}</strong>
+                                </span>
+                            </div>
+
+                            <div class="account-delivery-card">
+                                <i class="fa-solid fa-motorcycle"></i>
+                                <span>
+                                    <strong>Fast delivery mode</strong>
+                                    <small>Fresh meals, secure checkout</small>
+                                </span>
+                            </div>
+
+                            <div class="account-menu-list">
+                                <a href="{% url 'order_history' %}">
+                                    <span><i class="fa-solid fa-receipt"></i> My orders</span>
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                                <a href="{% url 'cart' %}">
+                                    <span><i class="fa-solid fa-bag-shopping"></i> Cart{% if cart_item_count %}<em>{{ cart_item_count }}</em>{% endif %}</span>
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                                <a href="{% url 'restaurants' %}">
+                                    <span><i class="fa-solid fa-store"></i> Browse restaurants</span>
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                                {% if user.is_staff %}
+                                <a href="{% url 'manager_dashboard' %}">
+                                    <span><i class="fa-solid fa-chart-line"></i> Manager workspace</span>
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                                {% endif %}
+                                <a href="mailto:support@foodexpress.com">
+                                    <span><i class="fa-solid fa-headset"></i> Help & support</span>
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                            </div>
+
+                            <a href="{% url 'logout' %}" class="account-logout">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="login-link">
+                        <i class="fa-regular fa-user"></i> Sign in
+                    </a>
+                    <a href="{% url 'register' %}" class="nav-button">
+                        Get started <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    {% if messages %}
+    <div class="messages" aria-live="polite">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">
+            <span>{{ message }}</span>
+            <button type="button" class="message-close" aria-label="Dismiss message">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="site-footer">
+        <div class="footer-main">
+            <div class="footer-brand">
+                <a href="{% url 'home' %}" class="brand footer-logo">
+                    <span class="brand-mark"><i class="fa-solid fa-bowl-food"></i></span>
+                    <span class="brand-copy">
+                        <span class="brand-name">Food<span>Express</span></span>
+                        <small>Fresh food, delivered</small>
+                    </span>
+                </a>
+                <p>Discover trusted local restaurants and enjoy freshly prepared meals delivered to your door.</p>
+                <div class="social-links" aria-label="Social links">
+                    <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Explore</h3>
+                <a href="{% url 'home' %}"><i class="fa-solid fa-chevron-right"></i> Home</a>
+                <a href="{% url 'restaurants' %}"><i class="fa-solid fa-chevron-right"></i> Restaurants</a>
+                <a href="{% url 'cart' %}"><i class="fa-solid fa-chevron-right"></i> Your cart</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Account</h3>
+                {% if user.is_authenticated %}
+                <a href="{% url 'order_history' %}"><i class="fa-solid fa-chevron-right"></i> Order history</a>
+                <a href="{% url 'logout' %}"><i class="fa-solid fa-chevron-right"></i> Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}"><i class="fa-solid fa-chevron-right"></i> Sign in</a>
+                <a href="{% url 'register' %}"><i class="fa-solid fa-chevron-right"></i> Create account</a>
+                {% endif %}
+            </div>
+
+            <div class="footer-column footer-contact">
+                <h3>Need help?</h3>
+                <a href="mailto:support@foodexpress.com">
+                    <i class="fa-solid fa-envelope"></i> support@foodexpress.com
+                </a>
+                <a href="tel:+919000000000">
+                    <i class="fa-solid fa-phone"></i> +91 90000 00000
+                </a>
+                <p><i class="fa-solid fa-clock"></i> Every day, 9 AM - 11 PM</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} FoodExpress. All rights reserved.</p>
+            <div>
+                <span><i class="fa-solid fa-lock"></i> Secure checkout</span>
+                <span><i class="fa-solid fa-circle-check"></i> Trusted restaurants</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/base.js' %}?v=20260628-1"></script>
+</body>
+</html>

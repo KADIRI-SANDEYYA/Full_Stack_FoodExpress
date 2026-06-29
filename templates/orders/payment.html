@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}?v=20260628-2">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="checkout-page">
+    <section class="checkout-hero">
+        <div class="hero-left">
+            <a href="{% url 'order_history' %}" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to orders
+            </a>
+            <span class="hero-badge">
+                <i class="fa-solid fa-credit-card"></i>
+                Secure payment
+            </span>
+            <h1 class="hero-title">Complete your <span class="hero-highlight">payment</span></h1>
+            <p class="hero-desc">Finish the checkout in a few taps and your meal will be prepared right away.</p>
+        </div>
+        <div class="checkout-steps">
+            <div class="step done">
+                <span class="step-num"><i class="fa-solid fa-check"></i></span>
+                <span class="step-label">Cart</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step done">
+                <span class="step-num"><i class="fa-solid fa-check"></i></span>
+                <span class="step-label">Details</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step active">
+                <span class="step-num">3</span>
+                <span class="step-label">Pay</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="checkout-layout">
+        <div class="delivery-form">
+            <div class="form-header">
+                <div class="form-icon">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div class="form-title-group">
+                    <h2 class="form-title">Pay with Razorpay</h2>
+                    <p class="form-subtitle">Fast, secure card and UPI payments for your order.</p>
+                </div>
+            </div>
+
+            <div class="payment-details-card">
+                <div class="payment-details-icon">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <div class="payment-details-copy">
+                    <h3>Payment details</h3>
+                    <p><strong>Gateway:</strong> Razorpay</p>
+                    <p><strong>Order:</strong> #{{ order.id }}</p>
+                    <p><strong>Amount:</strong> ₹{{ order.total_price }}</p>
+                    <p><strong>Status:</strong> Awaiting payment</p>
+                </div>
+            </div>
+
+            <div class="privacy-note">
+                <div class="privacy-icon">
+                    <i class="fa-solid fa-shield-heart"></i>
+                </div>
+                <div class="privacy-text">
+                    <strong>Your payment is encrypted.</strong>
+                    <span>Choose card, UPI, wallet, or net banking. In local demo mode payments are simulated securely.</span>
+                </div>
+            </div>
+
+            <form method="post" id="razorpay-form" class="delivery-form" style="padding:0; border:none; box-shadow:none;">
+                {% csrf_token %}
+                <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+                <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+                <input type="hidden" name="razorpay_order_id" id="razorpay_order_id" value="{{ razorpay_order_id }}">
+
+                <div class="privacy-note" style="margin-bottom: 18px;">
+                    <div class="privacy-icon">
+                        <i class="fa-solid fa-credit-card"></i>
+                    </div>
+                    <div class="privacy-text">
+                        <strong>Choose a payment method</strong>
+                        <span>Razorpay Checkout will open for card, UPI, wallet, and net banking. If live credentials are not configured, you can still complete a local demo confirmation.</span>
+                    </div>
+                </div>
+
+                <button class="place-order-btn" type="button" id="pay-button" {% if not has_live_payment %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}>
+                    <span class="btn-label">Pay with Razorpay • ₹{{ order.total_price }}</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                {% if not has_live_payment %}
+                <div class="privacy-note" style="margin-bottom: 18px; background: rgba(244, 81, 30, 0.05); border-color: rgba(244, 81, 30, 0.12);">
+                    <div class="privacy-icon">
+                        <i class="fa-solid fa-info-circle"></i>
+                    </div>
+                    <div class="privacy-text">
+                        <strong>Live Razorpay checkout is not configured.</strong>
+                        <span>Use the demo payment button below to complete your order in development.</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <button class="place-order-btn" type="button" id="demo-pay-button" style="margin-top: 12px; background: linear-gradient(135deg, #0f766e, #14b8a6); box-shadow: 0 4px 16px rgba(15, 118, 110, 0.2);">
+                    <span class="btn-label">Complete demo payment</span>
+                    <i class="fa-solid fa-circle-check"></i>
+                </button>
+            </form>
+        </div>
+
+        <aside class="order-summary">
+            <div class="restaurant-info">
+                <div class="restaurant-icon">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div class="restaurant-detail">
+                    <small>Order reference</small>
+                    <strong>#{{ order.id }}</strong>
+                </div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-heading">
+                    <span class="summary-title">Payment summary</span>
+                    <span class="item-count">{{ order.items.count }} item{{ order.items.count|pluralize }}</span>
+                </div>
+                <div class="order-items">
+                    {% for item in order.items.all %}
+                    <div class="order-item">
+                        <span class="item-qty">{{ item.quantity }}x</span>
+                        <div class="item-detail">
+                            <p>{{ item.food_item.name }}</p>
+                            <small>₹{{ item.price }} each</small>
+                        </div>
+                        <strong class="item-subtotal">₹{{ item.subtotal }}</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="cost-breakdown">
+                <div class="cost-row">
+                    <span>Amount</span>
+                    <strong>₹{{ order.total_price }}</strong>
+                </div>
+                <div class="cost-row">
+                    <span>Delivery</span>
+                    <span class="free-tag">FREE</span>
+                </div>
+                <div class="cost-divider"></div>
+                <div class="cost-total">
+                    <span>Total</span>
+                    <strong>₹{{ order.total_price }}</strong>
+                </div>
+            </div>
+        </aside>
+    </section>
+</main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    const hasLivePayment = {{ has_live_payment|yesno:'true,false' }};
+    const options = {
+        key: "{{ razorpay_key_id }}",
+        amount: "{{ amount }}",
+        currency: "{{ currency }}",
+        name: "FoodExpress",
+        description: "Food delivery payment",
+        order_id: "{{ razorpay_order_id }}",
+        handler: function (response) {
+            document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            document.getElementById('razorpay_signature').value = response.razorpay_signature;
+            document.getElementById('razorpay-form').submit();
+        },
+        prefill: {
+            name: "{{ user.get_full_name|default:user.username }}",
+            email: "{{ user.email }}",
+            contact: "{{ order.phone }}"
+        },
+        theme: {
+            color: "#f4511e"
+        },
+        modal: {
+            ondismiss: function () {
+                window.location.href = "{% url 'order_history' %}";
+            }
+        }
+    };
+
+    const payButton = document.getElementById('pay-button');
+    if (payButton) {
+        payButton.addEventListener('click', function () {
+            if (!hasLivePayment) {
+                window.alert('Razorpay live checkout is not configured. Use demo payment instead.');
+                return;
+            }
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        });
+    }
+
+    const demoButton = document.getElementById('demo-pay-button');
+    if (demoButton) {
+        demoButton.addEventListener('click', function () {
+            document.getElementById('razorpay_payment_id').value = 'demo_payment';
+            document.getElementById('razorpay_signature').value = 'demo_signature';
+            document.getElementById('razorpay-form').submit();
+        });
+    }
+</script>
+{% endblock %}

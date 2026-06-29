@@ -1,0 +1,348 @@
+/*
+   Final app-wide design layer.
+   Loaded after page CSS so these rules stabilize alignment and card styling.
+*/
+
+:root {
+    --app-shell: 1220px;
+    --app-gutter: clamp(15px, 3vw, 32px);
+    --app-bg: #f8fafc;
+    --app-card: #ffffff;
+    --app-border: #e2e8f0;
+    --app-ink: #0f172a;
+    --app-muted: #64748b;
+    --app-orange: #f4511e;
+    --app-green: #0f766e;
+    --app-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 18px 42px rgba(15, 23, 42, 0.07);
+}
+
+html,
+body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    background:
+        radial-gradient(circle at 0 0, rgba(244, 81, 30, 0.12), transparent 34rem),
+        radial-gradient(circle at 100% 0, rgba(15, 118, 110, 0.10), transparent 30rem),
+        linear-gradient(180deg, #fff7ed 0, #f8fafc 320px, #f8fafc 100%);
+}
+
+.navbar,
+.footer-main,
+.footer-bottom,
+.footer-trust-inner,
+.home-page,
+.cart-page,
+.checkout-page,
+.dashboard-page,
+.orders-page,
+.detail-container,
+.restaurant-listing-section,
+.benefits-section,
+.hero-content-wrapper,
+.hero-container,
+.menu-listing,
+.service-strip {
+    width: min(var(--app-shell), calc(100% - (var(--app-gutter) * 2))) !important;
+    max-width: var(--app-shell) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.home-page,
+.cart-page,
+.checkout-page,
+.dashboard-page,
+.orders-page,
+.food-detail-page,
+.form-page {
+    min-height: 70vh;
+    background: transparent !important;
+}
+
+.home-page,
+.cart-page,
+.checkout-page,
+.dashboard-page,
+.orders-page,
+.form-page {
+    padding-top: 34px !important;
+    padding-bottom: 34px !important;
+}
+
+.food-detail-page {
+    padding: 34px 0 !important;
+}
+
+.site-header {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.9) !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.site-header.is-scrolled {
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.10) !important;
+}
+
+.navbar {
+    min-height: 76px;
+    gap: 22px;
+}
+
+.brand-mark,
+.nav-links a,
+.nav-button,
+.nav-toggle,
+.cart-icon,
+.social-links a,
+.trust-item > span {
+    border-radius: 8px !important;
+}
+
+.nav-links {
+    padding: 4px !important;
+    border: 1px solid rgba(226, 232, 240, 0.86);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.nav-links a {
+    padding: 10px 12px !important;
+}
+
+.nav-links a.active {
+    color: var(--app-orange) !important;
+    background: #fff1eb !important;
+}
+
+.delivery-pill {
+    background: #ecfdf5 !important;
+    color: var(--app-green) !important;
+    border-color: rgba(15, 118, 110, 0.18) !important;
+}
+
+.hero-section,
+.restaurants-hero,
+.menu-hero,
+.cart-hero,
+.checkout-hero,
+.dashboard-hero,
+.orders-hero,
+.detail-card,
+.form-card,
+.cart-panel,
+.order-summary,
+.delivery-form,
+.dashboard-panel,
+.metric-card,
+.order-card,
+.restaurant-card,
+.food-card,
+.step-card,
+.cta-section,
+.service-strip,
+.benefits-container {
+    border-radius: 8px !important;
+}
+
+.restaurant-card,
+.food-card,
+.step-card,
+.cart-panel,
+.order-summary,
+.delivery-form,
+.dashboard-panel,
+.metric-card,
+.order-card,
+.detail-card,
+.form-card,
+.cta-section {
+    border: 1px solid var(--app-border) !important;
+    background: var(--app-card) !important;
+    box-shadow: var(--app-shadow) !important;
+}
+
+.restaurants-grid,
+.restaurant-grid,
+.food-grid,
+.steps-grid,
+.metrics-grid,
+.dashboard-grid,
+.cart-layout,
+.checkout-layout {
+    width: 100%;
+}
+
+.restaurants-grid,
+.restaurant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 24px !important;
+}
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 24px !important;
+}
+
+.steps-grid,
+.service-strip,
+.benefits-container {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+}
+
+.cart-layout,
+.checkout-layout {
+    grid-template-columns: minmax(0, 1fr) 350px !important;
+    gap: 24px !important;
+}
+
+.dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 24px !important;
+}
+
+.dashboard-grid .dashboard-panel:last-child {
+    grid-column: 1 / -1;
+    max-width: none !important;
+}
+
+.metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+    gap: 16px !important;
+}
+
+.card-image,
+.card-image-wrapper,
+.food-image-wrapper,
+.item-img,
+.detail-image-section {
+    background: linear-gradient(135deg, rgba(244, 81, 30, 0.10), rgba(15, 118, 110, 0.10)), #f1f5f9 !important;
+}
+
+.card-image,
+.card-image-wrapper {
+    aspect-ratio: 16 / 10;
+    height: auto !important;
+}
+
+.food-image-wrapper {
+    aspect-ratio: 4 / 3;
+    height: auto !important;
+}
+
+.card-image img,
+.card-cover,
+.food-image,
+.food-image-wrapper img,
+.item-img img,
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.05) contrast(1.02);
+}
+
+.card-overlay,
+.food-image-overlay,
+.image-overlay {
+    background: linear-gradient(180deg, transparent 42%, rgba(15, 23, 42, 0.46)) !important;
+}
+
+.card-cta,
+.food-order-btn,
+.add-to-cart-btn,
+.checkout-btn,
+.place-order-btn,
+.reorder-btn,
+.browse-btn,
+.explore-btn,
+.cta-btn,
+.submit-btn {
+    border-radius: 8px !important;
+}
+
+.site-footer {
+    margin-top: 48px !important;
+    background:
+        radial-gradient(circle at 88% 20%, rgba(244, 81, 30, 0.18), transparent 28%),
+        radial-gradient(circle at 8% 86%, rgba(15, 118, 110, 0.18), transparent 28%),
+        linear-gradient(135deg, #0d1523 0%, #101827 55%, #122c2b 100%) !important;
+}
+
+.footer-main {
+    padding-top: 56px !important;
+    padding-bottom: 44px !important;
+}
+
+@media (max-width: 1024px) {
+    .cart-layout,
+    .checkout-layout,
+    .dashboard-grid,
+    .detail-card {
+        grid-template-columns: 1fr !important;
+    }
+
+    .cart-layout,
+    .checkout-layout {
+        max-width: 760px !important;
+    }
+
+    .order-summary {
+        position: static !important;
+    }
+}
+
+@media (max-width: 980px) {
+    .nav-menu {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding-left: var(--app-gutter) !important;
+        padding-right: var(--app-gutter) !important;
+    }
+}
+
+@media (max-width: 620px) {
+    .navbar,
+    .footer-main,
+    .footer-bottom,
+    .footer-trust-inner,
+    .home-page,
+    .cart-page,
+    .checkout-page,
+    .dashboard-page,
+    .orders-page,
+    .detail-container,
+    .restaurant-listing-section,
+    .benefits-section,
+    .hero-content-wrapper,
+    .hero-container,
+    .menu-listing,
+    .service-strip {
+        width: calc(100% - 30px) !important;
+    }
+
+    .home-page,
+    .cart-page,
+    .checkout-page,
+    .dashboard-page,
+    .orders-page,
+    .food-detail-page,
+    .form-page {
+        padding-top: 22px !important;
+        padding-bottom: 22px !important;
+    }
+
+    .restaurants-grid,
+    .restaurant-grid,
+    .food-grid {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+    }
+}

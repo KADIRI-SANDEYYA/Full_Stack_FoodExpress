@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/restaurants.css' %}?v=20260626-2">
+<link rel="stylesheet" href="{% static 'css/food_list.css' %}?v=20260627-1">
+<link rel="stylesheet" href="{% static 'css/search.css' %}?v=20260629-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="search-page">
+    <section class="search-hero">
+        <div class="search-hero-inner">
+            <span class="hero-eyebrow">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Search FoodExpress
+            </span>
+            {% if query %}
+                <h1 class="hero-title">Results for <span class="hero-highlight-text">"{{ query }}"</span></h1>
+                <p class="hero-description">
+                    Found {{ total_count }} match{{ total_count|pluralize }} across restaurants and foods.
+                </p>
+            {% else %}
+                <h1 class="hero-title">Search for <span class="hero-highlight-text">food or restaurants</span></h1>
+                <p class="hero-description">
+                    Type a dish, cuisine, restaurant, or area in the navbar search.
+                </p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="search-results">
+        {% if query %}
+            <div class="search-section">
+                <div class="listing-header">
+                    <div class="header-left">
+                        <span class="section-badge">
+                            <i class="fa-solid fa-store"></i>
+                            Restaurant matches
+                        </span>
+                        <h2 class="section-title">Restaurants</h2>
+                        <p class="section-subtitle">Open and nearby restaurants matching your search.</p>
+                    </div>
+                    <div class="header-right">
+                        <div class="result-count">
+                            <i class="fa-solid fa-store"></i>
+                            <span><strong>{{ restaurant_count }}</strong> result{{ restaurant_count|pluralize }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="restaurant-grid">
+                    {% for restaurant in restaurants %}
+                    <article class="restaurant-card">
+                        <a class="card-image-link" href="{% url 'food_list' restaurant.id %}" aria-label="View {{ restaurant.name }} menu">
+                            <div class="card-image-wrapper">
+                                {% if restaurant.cover_image %}
+                                    <img class="card-cover" src="{{ restaurant.cover_image.url }}" alt="{{ restaurant.name }}" loading="lazy">
+                                {% elif restaurant.logo %}
+                                    <img class="card-cover" src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }}" loading="lazy">
+                                {% else %}
+                                    <div class="card-image-placeholder">
+                                        <i class="fa-solid fa-store"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="card-overlay"></div>
+
+                                {% if restaurant.is_open %}
+                                    <span class="badge badge-open">
+                                        <span class="badge-dot pulse"></span>
+                                        Open now
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-closed">
+                                        <span class="badge-dot"></span>
+                                        Closed
+                                    </span>
+                                {% endif %}
+
+                                <span class="badge badge-delivery">
+                                    <i class="fa-solid fa-motorcycle"></i>
+                                    {{ restaurant.delivery_time }}-{{ restaurant.delivery_time|add:10 }} min
+                                </span>
+
+                                <div class="card-logo">
+                                    {% if restaurant.logo %}
+                                        <img src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }} logo" loading="lazy">
+                                    {% else %}
+                                        <i class="fa-solid fa-utensils"></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">
+                                        <a href="{% url 'food_list' restaurant.id %}">{{ restaurant.name }}</a>
+                                    </h3>
+                                    <p class="card-cuisine">{{ restaurant.cuisine_type|default:"Fresh & Local Cuisine" }}</p>
+                                </div>
+                                <span class="card-rating">
+                                    <i class="fa-solid fa-star"></i>
+                                    {{ restaurant.rating|floatformat:1 }}
+                                </span>
+                            </div>
+
+                            <p class="card-address">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>{{ restaurant.address|truncatewords:15 }}</span>
+                            </p>
+
+                            <div class="card-details">
+                                <span class="detail-item">
+                                    <i class="fa-solid fa-utensils"></i>
+                                    {% if restaurant.menu_count %}
+                                        {{ restaurant.menu_count }} item{{ restaurant.menu_count|pluralize }}
+                                    {% else %}
+                                        Menu updating
+                                    {% endif %}
+                                </span>
+                                <span class="detail-item">
+                                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                                    {% if restaurant.starting_price %}
+                                        From Rs. {{ restaurant.starting_price|floatformat:0 }}
+                                    {% else %}
+                                        Prices vary
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <div class="card-footer">
+                                <span class="delivery-info">
+                                    <i class="fa-solid fa-motorcycle"></i>
+                                    <span>Free delivery</span>
+                                </span>
+                                <a class="card-cta" href="{% url 'food_list' restaurant.id %}">
+                                    View menu
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fa-solid fa-store-slash"></i>
+                        </div>
+                        <h3>No restaurants found</h3>
+                        <p>Try searching by restaurant name, cuisine, or area.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="search-section menu-page">
+                <div class="menu-header">
+                    <div class="menu-header-left">
+                        <span class="section-badge">
+                            <i class="fa-solid fa-bowl-food"></i>
+                            Food matches
+                        </span>
+                        <h2 class="menu-title">Foods</h2>
+                        <p class="menu-subtitle">Available dishes from open restaurants.</p>
+                    </div>
+                    <div class="menu-header-right">
+                        <div class="menu-count-badge">
+                            <i class="fa-solid fa-list-ul"></i>
+                            <span><strong>{{ food_count }}</strong> item{{ food_count|pluralize }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="food-grid">
+                    {% for food in foods %}
+                    <article class="food-card">
+                        <a href="{% url 'single_food' food.id %}" class="food-image-link">
+                            <div class="food-image-wrapper">
+                                {% if food.image %}
+                                    <img class="food-image" src="{{ food.image.url }}" alt="{{ food.name }}" loading="lazy">
+                                {% else %}
+                                    <div class="food-image-placeholder">
+                                        <i class="fa-solid fa-bowl-food"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="food-image-overlay"></div>
+
+                                <span class="food-badge food-badge-{% if food.is_veg %}veg{% else %}nonveg{% endif %}">
+                                    {% if food.is_veg %}
+                                        <span class="veg-dot"></span>
+                                        VEG
+                                    {% else %}
+                                        <i class="fa-solid fa-play nonveg-triangle"></i>
+                                        NON VEG
+                                    {% endif %}
+                                </span>
+
+                                <span class="food-rating-badge">
+                                    <i class="fa-solid fa-star"></i>
+                                    {{ food.rating|floatformat:1 }}
+                                </span>
+                            </div>
+                        </a>
+
+                        <div class="food-content">
+                            <div class="food-top">
+                                <span class="food-category">{{ food.category.name }}</span>
+                                <span class="availability-badge available">
+                                    <span class="avail-dot"></span>
+                                    Available
+                                </span>
+                            </div>
+
+                            <h3 class="food-name">
+                                <a href="{% url 'single_food' food.id %}">{{ food.name }}</a>
+                            </h3>
+                            <p class="search-food-restaurant">
+                                <i class="fa-solid fa-store"></i>
+                                {{ food.restaurant.name }}
+                            </p>
+                            <p class="food-description">{{ food.description|truncatewords:18 }}</p>
+
+                            <div class="food-footer">
+                                <div class="food-price">
+                                    <span class="price-amount">Rs. {{ food.price }}</span>
+                                    <span class="price-label">Taxes included</span>
+                                </div>
+                                <form method="post" action="{% url 'add_to_cart' food.id %}">
+                                    {% csrf_token %}
+                                    <button class="add-to-cart-btn" type="submit">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Add to cart
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                    {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fa-solid fa-bowl-food"></i>
+                        </div>
+                        <h3>No foods found</h3>
+                        <p>Try a dish name, category, cuisine, or restaurant name.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state search-empty">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <h3>Start with a search term</h3>
+                <p>Use the search bar in the navbar to find foods and restaurants together.</p>
+                <a href="{% url 'restaurants' %}" class="empty-cta">
+                    Browse restaurants
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

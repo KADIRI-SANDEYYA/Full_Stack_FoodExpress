@@ -1,0 +1,210 @@
+<!-- dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manager Dashboard | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=20260626-7"> -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-page">
+    <!-- ===== HERO SECTION ===== -->
+    <section class="dashboard-hero">
+        <div class="hero-left">
+            <span class="hero-badge">
+                <i class="fa-solid fa-chart-line"></i>
+                Manager workspace
+            </span>
+            <h1 class="hero-title">Keep your catalog <span class="hero-highlight">ready for orders</span></h1>
+            <p class="hero-desc">
+                Review the current catalog, spot availability gaps, and add new items from one focused dashboard.
+            </p>
+        </div>
+        <div class="hero-actions">
+            <a href="{% url 'add_restaurant' %}" class="action-btn primary">
+                <i class="fa-solid fa-store"></i>
+                Add restaurant
+            </a>
+            <a href="{% url 'add_category' %}" class="action-btn secondary">
+                <i class="fa-solid fa-layer-group"></i>
+                Add category
+            </a>
+            <a href="{% url 'add_food' %}" class="action-btn secondary">
+                <i class="fa-solid fa-bowl-food"></i>
+                Add food
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== METRICS ===== -->
+    <section class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-icon restaurants">
+                <i class="fa-solid fa-store"></i>
+            </div>
+            <div class="metric-data">
+                <span class="metric-value">{{ restaurant_count }}</span>
+                <span class="metric-label">Restaurants</span>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon open">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="metric-data">
+                <span class="metric-value">{{ open_count }}</span>
+                <span class="metric-label">Open now</span>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon foods">
+                <i class="fa-solid fa-bowl-food"></i>
+            </div>
+            <div class="metric-data">
+                <span class="metric-value">{{ food_count }}</span>
+                <span class="metric-label">Menu items</span>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon available">
+                 <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="metric-data">
+                <span class="metric-value">{{ available_food_count }}</span>
+                <span class="metric-label">Available dishes</span>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon categories">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="metric-data">
+                <span class="metric-value">{{ category_count }}</span>
+                <span class="metric-label">Categories</span>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon active">
+                <i class="fa-solid fa-fire"></i>
+            </div>
+            <div class="metric-data">
+                <span class="metric-value">{{ active_category_count }}</span>
+                <span class="metric-label">Active categories</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== DASHBOARD GRID ===== -->
+    <section class="dashboard-grid">
+        <!-- Restaurants Panel -->
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <div class="panel-title-group">
+                    <span class="panel-badge">
+                        <i class="fa-solid fa-store"></i>
+                        Restaurants
+                    </span>
+                    <h2 class="panel-title">Recently added</h2>
+                </div>
+                <a href="{% url 'add_restaurant' %}" class="panel-action">
+                    <i class="fa-solid fa-plus"></i>
+                    New
+                </a>
+            </div>
+            <div class="panel-body">
+                {% for restaurant in restaurants %}
+                <div class="list-item">
+                    <div class="list-icon">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <div class="list-content">
+                        <strong class="list-title">{{ restaurant.name }}</strong>
+                        <span class="list-meta">{{ restaurant.cuisine_type }} · {{ restaurant.delivery_time }} min</span>
+                    </div>
+                    <span class="status-tag {% if restaurant.is_open %}status-open{% else %}status-closed{% endif %}">
+                        {% if restaurant.is_open %}Open{% else %}Closed{% endif %}
+                    </span>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <i class="fa-regular fa-store-slash"></i>
+                    <p>No restaurants yet</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Menu Items Panel -->
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <div class="panel-title-group">
+                    <span class="panel-badge">
+                        <i class="fa-solid fa-utensils"></i>
+                        Menu
+                    </span>
+                    <h2 class="panel-title">Latest dishes</h2>
+                </div>
+                <a href="{% url 'add_food' %}" class="panel-action">
+                    <i class="fa-solid fa-plus"></i>
+                    New
+                </a>
+            </div>
+            <div class="panel-body">
+                {% for food in foods %}
+                <div class="list-item">
+                    <div class="list-icon">
+                        <i class="fa-solid fa-bowl-food"></i>
+                    </div>
+                    <div class="list-content">
+                        <strong class="list-title">{{ food.name }}</strong>
+                        <span class="list-meta">{{ food.restaurant.name }} · ₹{{ food.price }}</span>
+                    </div>
+                    <span class="status-tag {% if food.is_available %}status-open{% else %}status-closed{% endif %}">
+                        {% if food.is_available %}Live{% else %}Hidden{% endif %}
+                    </span>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <i class="fa-regular fa-bowl-food"></i>
+                    <p>No food items yet</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Categories Panel -->
+        <div class="dashboard-panel categories-panel">
+            <div class="panel-header">
+                <div class="panel-title-group">
+                    <span class="panel-badge">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Categories
+                    </span>
+                    <h2 class="panel-title">Menu groups</h2>
+                </div>
+                <a href="{% url 'add_category' %}" class="panel-action">
+                    <i class="fa-solid fa-plus"></i>
+                    New
+                </a>
+            </div>
+            <div class="panel-body tags-wrapper">
+                {% for category in categories %}
+                <span class="category-tag {% if not category.is_active %}category-tag-muted{% endif %}">
+                    <i class="fa-solid fa-tag"></i>
+                    {{ category.name }}
+                </span>
+                {% empty %}
+                <div class="empty-state">
+                    <i class="fa-regular fa-layer-group"></i>
+                    <p>No categories yet</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

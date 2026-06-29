@@ -1,0 +1,179 @@
+<!-- single_food_detail.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ singleFoodItem.name }} | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/singleFoodCard.css' %}?v=20260626-9">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="food-detail-page">
+    <div class="detail-container">
+        <!-- ===== BREADCRUMB ===== -->
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{% url 'restaurants' %}" class="breadcrumb-link">
+                <i class="fa-solid fa-store"></i>
+                Restaurants
+            </a>
+            <span class="breadcrumb-separator">
+                <i class="fa-solid fa-chevron-right"></i>
+            </span>
+            <a href="{% url 'food_list' singleFoodItem.restaurant.id %}" class="breadcrumb-link">
+                {{ singleFoodItem.restaurant.name }}
+            </a>
+            <span class="breadcrumb-separator">
+                <i class="fa-solid fa-chevron-right"></i>
+            </span>
+            <span class="breadcrumb-current">{{ singleFoodItem.name }}</span>
+        </nav>
+
+        <!-- ===== DETAIL CARD ===== -->
+        <article class="detail-card">
+            <!-- Image Section -->
+            <section class="detail-image-section">
+                <div class="image-wrapper">
+                    {% if singleFoodItem.image %}
+                        <img src="{{ singleFoodItem.image.url }}" alt="{{ singleFoodItem.name }}" loading="lazy">
+                    {% else %}
+                        <div class="image-placeholder">
+                            <i class="fa-solid fa-bowl-food"></i>
+                        </div>
+                    {% endif %}
+                    <div class="image-overlay"></div>
+                    
+                    <!-- Back Button -->
+                    <a href="{% url 'food_list' singleFoodItem.restaurant.id %}" class="back-btn">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Back to menu</span>
+                    </a>
+
+                    <!-- Wishlist Button -->
+                    <button class="wishlist-btn" type="button" aria-label="Save {{ singleFoodItem.name }}">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+
+                    <!-- Image Badges -->
+                    <div class="image-badges">
+                        <span class="diet-badge {% if singleFoodItem.is_veg %}diet-veg{% else %}diet-nonveg{% endif %}">
+                            <i class="fa-solid fa-circle"></i>
+                            {% if singleFoodItem.is_veg %}Veg{% else %}Non veg{% endif %}
+                        </span>
+                        <span class="rating-badge">
+                            <i class="fa-solid fa-star"></i>
+                            {{ singleFoodItem.rating|floatformat:1 }}
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Content Section -->
+            <section class="detail-content-section">
+                <div class="content-header">
+                    <span class="category-tag">{{ singleFoodItem.category.name }}</span>
+                    <span class="availability-tag {% if not singleFoodItem.is_available %}unavailable{% endif %}">
+                        <span class="avail-dot"></span>
+                        {% if singleFoodItem.is_available %}Available{% else %}Unavailable{% endif %}
+                    </span>
+                </div>
+
+                <h1 class="food-title">{{ singleFoodItem.name }}</h1>
+
+                <!-- Restaurant Info -->
+                <a class="restaurant-info" href="{% url 'food_list' singleFoodItem.restaurant.id %}">
+                    <div class="restaurant-avatar">
+                        {% if singleFoodItem.restaurant.logo %}
+                            <img src="{{ singleFoodItem.restaurant.logo.url }}" alt="{{ singleFoodItem.restaurant.name }} logo">
+                        {% else %}
+                            <i class="fa-solid fa-store"></i>
+                        {% endif %}
+                    </div>
+                    <div class="restaurant-detail">
+                        <small>Prepared by</small>
+                        <strong>{{ singleFoodItem.restaurant.name }}</strong>
+                    </div>
+                    <i class="fa-solid fa-circle-check verified-icon"></i>
+                </a>
+
+                <!-- Description -->
+                <p class="food-description">{{ singleFoodItem.description }}</p>
+
+                <!-- Facts -->
+                <div class="food-facts">
+                    <div class="fact-item">
+                        <div class="fact-icon">
+                            <i class="fa-solid fa-fire-burner"></i>
+                        </div>
+                        <div class="fact-text">
+                            <strong>Made fresh</strong>
+                            <small>Prepared after ordering</small>
+                        </div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-icon">
+                            <i class="fa-solid fa-motorcycle"></i>
+                        </div>
+                        <div class="fact-text">
+                            <strong>25-35 min</strong>
+                            <small>Estimated delivery</small>
+                        </div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-icon">
+                            <i class="fa-solid fa-shield-heart"></i>
+                        </div>
+                        <div class="fact-text">
+                            <strong>Secure pack</strong>
+                            <small>Handled with care</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purchase Panel -->
+                <div class="purchase-panel">
+                    <div class="price-block">
+                        <span class="price-label">Price</span>
+                        <div class="price-value">
+                            <strong>₹{{ singleFoodItem.price }}</strong>
+                        </div>
+                        <span class="price-note">Inclusive of all taxes</span>
+                    </div>
+                    <div class="availability-status {% if not singleFoodItem.is_available %}status-unavailable{% endif %}">
+                        <span class="status-dot"></span>
+                        {% if singleFoodItem.is_available %}Available now{% else %}Not available{% endif %}
+                    </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                {% if singleFoodItem.is_available %}
+                    <form method="post" action="{% url 'add_to_cart' singleFoodItem.id %}" class="add-form">
+                        {% csrf_token %}
+                        <button type="submit" class="add-to-cart-btn">
+                            <span class="btn-label">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                Add to cart
+                            </span>
+                            <span class="btn-price">₹{{ singleFoodItem.price }}</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                {% else %}
+                    <button class="add-to-cart-btn disabled" type="button" disabled>
+                        <span class="btn-label">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                            Currently unavailable
+                        </span>
+                    </button>
+                {% endif %}
+
+                <p class="secure-note">
+                    <i class="fa-solid fa-lock"></i>
+                    Secure checkout and reliable delivery updates
+                </p>
+            </section>
+        </article>
+    </div>
+</main>
+{% endblock %}

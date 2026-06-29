@@ -1,0 +1,195 @@
+<!-- cart.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Cart | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}?v=20260626-4">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="cart-page">
+    <!-- ===== HERO SECTION ===== -->
+    <section class="cart-hero">
+        <div class="hero-left">
+            <span class="hero-badge">
+                <i class="fa-solid fa-bag-shopping"></i>
+                Your order
+            </span>
+            <h1 class="hero-title">Good food is <span class="hero-highlight">almost yours</span></h1>
+            <p class="hero-desc">
+                Review your dishes, adjust quantities, and head to our secure checkout.
+            </p>
+        </div>
+        <div class="checkout-steps">
+            <div class="step active">
+                <span class="step-num">1</span>
+                <span class="step-label">Cart</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <span class="step-num">2</span>
+                <span class="step-label">Details</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <span class="step-num">3</span>
+                <span class="step-label">Confirm</span>
+            </div>
+        </div>
+    </section>
+
+    {% if cart %}
+    <!-- ===== CART LAYOUT ===== -->
+    <section class="cart-layout">
+        <!-- Cart Panel -->
+        <div class="cart-panel">
+            <div class="panel-header">
+                <div class="panel-left">
+                    <h2 class="panel-title">Your selections</h2>
+                    <p class="panel-count">{{ item_count }} item{{ item_count|pluralize }} in your bag</p>
+                </div>
+                <a href="{% url 'restaurants' %}" class="add-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Add more
+                </a>
+            </div>
+
+            <div class="cart-items">
+                {% for item in cart_items %}
+                <article class="cart-item">
+                    <div class="item-img">
+                        {% if item.image %}
+                            <img src="{{ item.image }}" alt="{{ item.name }}" loading="lazy">
+                        {% else %}
+                            <div class="img-placeholder">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                        {% endif %}
+                        <span class="fresh-tag">
+                            <i class="fa-solid fa-circle"></i>
+                            Fresh
+                        </span>
+                    </div>
+
+                    <div class="item-info">
+                        <h3 class="item-name">{{ item.name }}</h3>
+                        <p class="item-desc">Made to order and carefully packed for delivery.</p>
+                        <span class="item-price">₹{{ item.price }}</span>
+                    </div>
+
+                    <div class="item-controls">
+                        <div class="qty-control">
+                            <form method="post" action="{% url 'decrease_quantity' item.food_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="qty-btn" aria-label="Decrease quantity">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                            </form>
+                            <span class="qty-num">{{ item.quantity }}</span>
+                            <form method="post" action="{% url 'increase_quantity' item.food_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="qty-btn" aria-label="Increase quantity">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <span class="item-total">₹{{ item.subtotal }}</span>
+                        <form method="post" action="{% url 'remove_from_cart' item.food_id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="remove-btn">
+                                <i class="fa-regular fa-trash-can"></i>
+                                Remove
+                            </button>
+                        </form>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+
+            <div class="fresh-note">
+                <div class="note-icon">
+                    <i class="fa-solid fa-temperature-three-quarters"></i>
+                </div>
+                <div class="note-text">
+                    <strong>We keep it fresh</strong>
+                    <span>Your order is prepared after checkout and packed to retain heat.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <aside class="order-summary">
+            <div class="summary-header">
+                <span class="summary-title">Order summary</span>
+                <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div class="summary-row">
+                <span>Item total</span>
+                <strong>₹{{ total }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Delivery fee</span>
+                <span class="free-tag">FREE</span>
+            </div>
+            <div class="summary-row muted">
+                <span>Taxes</span>
+                <span>Included</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-total">
+                <span>To pay</span>
+                <strong>₹{{ total }}</strong>
+            </div>
+
+            <a href="{% url 'checkout' %}" class="checkout-btn">
+                Continue to checkout
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            <p class="secure-tag">
+                <i class="fa-solid fa-shield-halved"></i>
+                Secure checkout &amp; protected payment
+            </p>
+
+            <div class="delivery-box">
+                <div class="delivery-icon">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="delivery-info">
+                    <strong>Fast delivery</strong>
+                    <p>Estimated arrival in 30-45 minutes</p>
+                </div>
+            </div>
+        </aside>
+    </section>
+    {% else %}
+    <!-- ===== EMPTY CART ===== -->
+    <div class="empty-wrapper">
+        <div class="empty-cart">
+            <div class="empty-visual">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <div class="empty-accent">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+            </div>
+            <span class="empty-badge">
+                <i class="fa-regular fa-face-frown"></i>
+                Your bag feels light
+            </span>
+            <h2 class="empty-title">Nothing delicious here yet</h2>
+            <p class="empty-desc">
+                Explore nearby restaurants and fill your cart with something worth looking forward to.
+            </p>
+            <a href="{% url 'restaurants' %}" class="explore-btn">
+                Explore restaurants
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

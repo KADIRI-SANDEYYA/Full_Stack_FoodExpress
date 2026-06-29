@@ -1,0 +1,168 @@
+<!-- checkout.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout | FoodExpress{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}?v=20260626-5">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="checkout-page">
+    <!-- ===== HERO SECTION ===== -->
+    <section class="checkout-hero">
+        <div class="hero-left">
+            <a href="{% url 'cart' %}" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to cart
+            </a>
+            <span class="hero-badge">
+                <i class="fa-solid fa-lock"></i>
+                Secure checkout
+            </span>
+            <h1 class="hero-title">Where should we <span class="hero-highlight">deliver?</span></h1>
+            <p class="hero-desc">
+                Share your delivery details and we will take care of the rest.
+            </p>
+        </div>
+        <div class="checkout-steps">
+            <div class="step done">
+                <span class="step-num"><i class="fa-solid fa-check"></i></span>
+                <span class="step-label">Cart</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step active">
+                <span class="step-num">2</span>
+                <span class="step-label">Details</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <span class="step-num">3</span>
+                <span class="step-label">Confirm</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CHECKOUT LAYOUT ===== -->
+    <section class="checkout-layout">
+        <!-- Delivery Form -->
+        <form method="post" class="delivery-form">
+            {% csrf_token %}
+            <div class="form-header">
+                <div class="form-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="form-title-group">
+                    <h2 class="form-title">Delivery details</h2>
+                    <p class="form-subtitle">Please enter an address where someone can receive the order.</p>
+                </div>
+            </div>
+
+            <!-- Address Field -->
+            <div class="form-group">
+                <label for="address" class="form-label">Complete delivery address</label>
+                <div class="input-wrap textarea-wrap">
+                    <i class="fa-solid fa-house input-icon"></i>
+                    <textarea id="address" name="address" rows="4" placeholder="House or flat number, street, landmark and area" required>{{ request.POST.address }}</textarea>
+                </div>
+                <span class="field-hint">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Add a nearby landmark to help your delivery partner.
+                </span>
+            </div>
+
+            <!-- Phone Field -->
+            <div class="form-group">
+                <label for="phone" class="form-label">Phone number</label>
+                <div class="input-wrap phone-wrap">
+                    <i class="fa-solid fa-phone input-icon"></i>
+                    <span class="country-code">+91</span>
+                    <input id="phone" type="tel" name="phone" value="{{ request.POST.phone }}" placeholder="98765 43210" maxlength="15" autocomplete="tel" required>
+                </div>
+            </div>
+
+            <!-- Privacy Note -->
+            <div class="privacy-note">
+                <div class="privacy-icon">
+                    <i class="fa-solid fa-shield-heart"></i>
+                </div>
+                <div class="privacy-text">
+                    <strong>Your details stay private.</strong>
+                    <span>We only use this number for delivery updates and order support.</span>
+                </div>
+            </div>
+
+            <!-- Place Order Button -->
+            <button class="place-order-btn" type="submit">
+                <span class="btn-label">Continue to payment</span>
+                <span class="btn-price">₹{{ total }}</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <!-- Order Summary -->
+        <aside class="order-summary">
+            <!-- Restaurant Info -->
+            <div class="restaurant-info">
+                <div class="restaurant-icon">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div class="restaurant-detail">
+                    <small>Ordering from</small>
+                    <strong>{{ selected_restaurant_name|default:"Your selected restaurant" }}</strong>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="summary-section">
+                <div class="summary-heading">
+                    <span class="summary-title">Your order</span>
+                    <span class="item-count">{{ item_count }} item{{ item_count|pluralize }}</span>
+                </div>
+                <div class="order-items">
+                    {% for item in cart_items %}
+                    <div class="order-item">
+                        <span class="item-qty">{{ item.quantity }}x</span>
+                        <div class="item-detail">
+                            <p>{{ item.name }}</p>
+                            <small>₹{{ item.price }} each</small>
+                        </div>
+                        <strong class="item-subtotal">₹{{ item.subtotal }}</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Cost Breakdown -->
+            <div class="cost-breakdown">
+                <div class="cost-row">
+                    <span>Item total</span>
+                    <strong>₹{{ total }}</strong>
+                </div>
+                <div class="cost-row">
+                    <span>Delivery</span>
+                    <span class="free-tag">FREE</span>
+                </div>
+                <div class="cost-divider"></div>
+                <div class="cost-total">
+                    <span>Total</span>
+                    <strong>₹{{ total }}</strong>
+                </div>
+            </div>
+
+            <!-- ETA -->
+            <div class="eta-box">
+                <div class="eta-icon">
+                    <i class="fa-solid fa-motorcycle"></i>
+                </div>
+                <div class="eta-info">
+                    <small>Estimated delivery</small>
+                    <strong>30-45 minutes</strong>
+                </div>
+            </div>
+        </aside>
+    </section>
+</main>
+{% endblock %}
