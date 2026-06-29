@@ -36,6 +36,10 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS", ""
+).split(",")
+
 
 # Application definition
 
@@ -98,12 +102,12 @@ WSGI_APPLICATION = "mysite.wsgi.application"
 if os.getenv("RENDER"):
     DATABASES = {
         "default" : {
-            "ENGINE": os.getenv("DB_ENGINE"),
-            "NAME": os.getenv("DB_NAME"),
-            "USER": os.getenv("DB_USER"),
-            "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": os.getenv("DB_HOST"),
-            "PORT": os.getenv("DB_PORT","3306"),
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.getenv("MYSQL_DATABASE"),
+            "USER": os.getenv("MYSQL_USER"),
+            "PASSWORD": os.getenv("MYSQL_PASSWORD"),
+            "HOST": os.getenv("MYSQL_HOST"),
+            "PORT": os.getenv("MYSQL_PORT","3306"),
         }
     }
 else:
