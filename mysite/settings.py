@@ -19,7 +19,7 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
+DEBUG = os.getenv("DEBUG") == True
 
 ALLOWED_HOSTS = [
     "*"
@@ -137,4 +137,4 @@ STORAGES = {
 }
 
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
-RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "") 
