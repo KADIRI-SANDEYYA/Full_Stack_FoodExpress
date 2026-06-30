@@ -26,15 +26,17 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "True").strip().lower() == "true"
+DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
 
 _default_hosts = "127.0.0.1,localhost,testserver"
 _configured_hosts = os.getenv("ALLOWED_HOSTS", _default_hosts).strip() or _default_hosts
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in _configured_hosts.split(",")
-    if host.strip()
-]
+ALLOWED_HOSTS = ["*"]
+
+# ALLOWED_HOSTS = [
+#     host.strip()
+#     for host in _configured_hosts.split(",")
+#     if host.strip()
+# ]
 
 CSRF_TRUSTED_ORIGINS = os.getenv(
     "CSRF_TRUSTED_ORIGINS", ""
