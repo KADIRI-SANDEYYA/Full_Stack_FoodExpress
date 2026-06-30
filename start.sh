@@ -1,5 +1,7 @@
 #!/bin/bash
-python manage.py collectstatic --noinput
+
+pip install -r requirements.txt
+python manage.py makemigrations --noinput
 python manage.py migrate --noinput
-gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT
+python manage.py collectstatic --noinput
 
